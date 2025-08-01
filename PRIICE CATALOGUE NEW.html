@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROPA DOS Lighting Fixtures Price Catalogue</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for Inter font and general body styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+            color: #374151; /* Dark gray text */
+        }
+        /* Ensure images are responsive within their containers */
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block; /* Remove extra space below image */
+        }
+
+        /* General Modal Overlay styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Specific styles for Product Details Modal Content */
+        .product-details-modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.75rem; /* rounded-lg */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            position: relative;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .modal-overlay.show .product-details-modal-content {
+            transform: translateY(0);
+        }
+
+        /* Specific styles for Image Viewer Modal Content */
+        .image-viewer-modal-content {
+            background-color: rgba(0, 0, 0, 0.8); /* Darker background for image viewer */
+            padding: 1rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            max-width: 95%; /* Allow image to take more space */
+            max-height: 95%;
+            display: flex; /* Use flex for centering image */
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .image-viewer-modal-content img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* Ensure entire image is visible */
+            border-radius: 0.5rem; /* rounded-md */
+        }
+
+        /* Close button for all modals */
+        .modal-close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280; /* gray-500 */
+            transition: color 0.2s ease-in-out;
+            z-index: 1010; /* Ensure close button is above image */
+        }
+
+        .modal-close-button:hover {
+            color: #1f2937; /* gray-900 */
+        }
+
+        /* Specific close button for image viewer to be white for contrast */
+        .image-viewer-modal-content .modal-close-button {
+            color: white;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5); /* Add shadow for visibility */
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8 lg:p-10">
+    <div class="max-w-7xl mx-auto bg-white shadow-xl rounded-lg p-6 sm:p-8 md:p-10">
+        <!-- Header Section -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-2">ROPA DOS Lighting Fixtures</h1>
+            <p class="text-xl text-gray-600">Price Catalogue Evaluation</p>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="mb-10 flex justify-center">
+            <input type="text" id="search-input" placeholder="Search products..." class="w-full max-w-xl p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg">
+        </div>
+
+        <!-- Product Grid Section -->
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Products will be dynamically loaded here by JavaScript -->
+        </div>
+
+        <!-- Footer Section -->
+        <footer class="text-center mt-12 text-gray-500 text-sm">
+            <p>&copy; 2025 ROPA DOS Lighting Fixtures. All rights reserved.</p>
+            <p>Data last updated: <span id="last-updated-date"></span></p>
+        </footer>
+    </div>
+
+    <!-- Product Details Modal -->
+    <div id="product-details-modal" class="modal-overlay">
+        <div class="product-details-modal-content">
+            <button class="modal-close-button" id="close-product-details-modal-btn">&times;</button>
+            <h2 id="modal-product-title" class="text-3xl font-bold text-gray-900 mb-6"></h2>
+            <div id="modal-product-details" class="space-y-6">
+                <!-- Details will be injected here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Viewer Modal -->
+    <div id="image-viewer-modal" class="modal-overlay">
+        <div class="image-viewer-modal-content">
+            <button class="modal-close-button" id="close-image-viewer-modal-btn">&times;</button>
+            <img id="viewer-image" src="" alt="Zoomed Image">
+        </div>
+    </div>
+
+    <script>
+        // Product Data - Manually populated from your Google Sheet screenshot
+        // IMPORTANT: Replace these placeholder URLs with your actual direct image links from Imgur or Google Cloud Storage.
+        // Ensure your Google Drive images are set to "Anyone with the link" can view if you use them.
+        const productsDataArray = [
+            {
+                id: "wall-lamp",
+                shortTitle: "Wall Lamp",
+                title: "LAMP, WALL, OUTDOOR, GRAY, CODE: 1A 7244",
+                uom: "PC",
+                imageUrl: "https://i.imgur.com/cPhJnbo.png", // Main card image placeholder
+                suppliers: [
+                    { name: "Sea Road", price: "N/A", total: "P 0.00", imageUrl: "https://placehold.co/100x75/e0e0e0/333333?text=Searoad+Wall+Lamp" },
+                    { name: "Cebu Lites Plus", price: "P 1,700.00", total: "P 445,400.00", imageUrl: "https://i.imgur.com/cPhJnbo.png" }, // Your Google Drive link
+                    { name: "Bright Lamps", price: "N/A", total: "P 0.00", imageUrl: "https://placehold.co/100x75/c0c0c0/555555?text=Bright+Wall+Lamp" }
+                ]
+            },
+            {
+                id: "led-bulb",
+                shortTitle: "LED Bulb 7W E27",
+                title: "BULB, LED, 7 WATTS, E27, 220V, WARM WHITE",
+                uom: "PC",
+                imageUrl: "https://i.imgur.com/nQF2GOJ.png", // Main card image - Your Google Drive link
+                suppliers: [
+                    { name: "Sea Road", price: "P 100.00", total: "P 26,200.00", imageUrl: "https://i.imgur.com/utbyA1e.png" }, // Your Google Drive link
+                    { name: "Cebu Lites Plus", price: "P 94.75", total: "P 24,824.50", imageUrl: "https://i.imgur.com/nQF2GOJ.png" }, // Your Google Drive link
+                    { name: "Bright Lamps", price: "P 148.00", total: "P 38,776.00", imageUrl: "https://i.imgur.com/nQF2GOJ.png" } // Your Google Drive link
+                ]
+            },
+            {
+                id: "socket",
+                shortTitle: "Socket Receptacle 4\"",
+                title: "SOCKET, RECEPTACLE, 4\", OMNI",
+                uom: "PC",
+                imageUrl: "https://i.imgur.com/TzdDNT2.png", // Main card image placeholder
+                suppliers: [
+                    { name: "Sea Road", price: "P 25.00", total: "P 34,375.00", imageUrl: "https://i.imgur.com/yXDTH5u.png" }, // Your Google Drive link
+                    { name: "Cebu Lites Plus", price: "P 35.75", total: "P 49,156.25", imageUrl: "https://i.imgur.com/TzdDNT2.png" }, // Your Google Drive link
+                    { name: "Bright Lamps", price: "P 32.00", total: "P 44,000.00", imageUrl: "https://i.imgur.com/FpRmAME.png" } // Your Google Drive link
+                ]
+            },
+            {
+                id: "downlight",
+                shortTitle: "Lighting Fixture Downlight",
+                title: "LIGHTING FIXTURE, DOWNLIGHT, SURFACE TYPE, 6\" DIA. 150 MM H, 1A 4310, WHITE",
+                uom: "PC",
+                imageUrl: "https://i.imgur.com/ePZDN13.png", // Main card image placeholder
+                suppliers: [
+                    { name: "Sea Road", price: "P 725.00", total: "P 50,750.00", imageUrl: "https://i.imgur.com/mGxrbKM.png" },
+                    { name: "Cebu Lites Plus", price: "P 300.00", total: "P 21,000.00", imageUrl: "https://i.imgur.com/ePZDN13.png" },
+                    { name: "Bright Lamps", price: "P 320.00", total: "P 22,400.00", imageUrl: "https://i.imgur.com/dKWWcKl.png" }
+                ]
+            },
+	    {
+                id: "led-bulb",
+                shortTitle: "LED Bulb 9W",
+                title: "BULB, 9 WATTS, OMNI",
+                uom: "PC",
+                imageUrl: "https://i.imgur.com/ePZDN13.png", // Main card image placeholder
+                suppliers: [
+                    { name: "Sea Road", price: "P 725.00", total: "P 130.00", imageUrl: "https://i.imgur.com/mGxrbKM.png" },
+                    { name: "Cebu Lites Plus", price: "P 300.00", total: "P 114.75", imageUrl: "https://i.imgur.com/ePZDN13.png" },
+                    { name: "Bright Lamps", price: "P 320.00", total: "P 148.00", imageUrl: "https://i.imgur.com/dKWWcKl.png" }
+                ]
+            },
+	    {
+                id: "lighting-casing-industrial",
+                shortTitle: "Lighting Casing Weatherproof",
+                title: "LIGHTING CASING, INDUSTRIAL, WEATHER PROOF, 1X40W, 1245MM X 70MM X 75MM, WITH STAINLESS CLIP",
+                uom: "PC",
+                imageUrl: "https://i.imgur.com/Fr4NDVu.png", // Main card image placeholder
+                suppliers: [
+                    { name: "Sea Road", price: "P 725.00", total: "P 705.00", imageUrl: "https://i.imgur.com/Fr4NDVu.png" },
+                    { name: "Cebu Lites Plus", price: "P 300.00", total: "P 1,200.00", imageUrl: "https://i.imgur.com/XsKmkMz.png" },
+                    { name: "Bright Lamps", price: "P 320.00", total: "P 0.00", imageUrl: "https://i.imgur.com/dKWWcKl.png" }
+                ]
+            },
+
+        ];
+
+        // Convert the array to an object map for quick lookup by ID
+        const productsData = productsDataArray.reduce((acc, product) => {
+            acc[product.id] = product;
+            return acc;
+        }, {});
+
+        // Get elements for Product Details Modal
+        const productDetailsModal = document.getElementById('product-details-modal');
+        const closeProductDetailsModalBtn = document.getElementById('close-product-details-modal-btn');
+        const modalProductTitle = document.getElementById('modal-product-title');
+        const modalProductDetails = document.getElementById('modal-product-details');
+        const productGrid = document.getElementById('product-grid');
+        const lastUpdatedDateSpan = document.getElementById('last-updated-date');
+        const searchInput = document.getElementById('search-input');
+
+        // Get elements for Image Viewer Modal
+        const imageViewerModal = document.getElementById('image-viewer-modal');
+        const closeImageViewerModalBtn = document.getElementById('close-image-viewer-modal-btn');
+        const viewerImage = document.getElementById('viewer-image');
+
+        // Function to render product cards
+        function renderProductCards(productsToRender) {
+            productGrid.innerHTML = ''; // Clear existing products
+            if (productsToRender.length === 0) {
+                productGrid.innerHTML = '<p class="col-span-full text-center text-gray-600 text-xl py-10">No products found.</p>';
+                return;
+            }
+
+            productsToRender.forEach(product => {
+                // Determine the main price to display on the card (e.g., lowest price)
+                let displayPrice = "N/A";
+                let lowestPrice = Infinity;
+                product.suppliers.forEach(supplier => {
+                    // Parse price to a number, handling 'N/A' and currency symbols
+                    const priceString = supplier.price.replace('P ', '').replace(/,/g, '').replace('₱ ', '');
+                    const priceValue = parseFloat(priceString);
+                    if (!isNaN(priceValue) && priceValue < lowestPrice) {
+                        lowestPrice = priceValue;
+                    }
+                });
+
+                // Format the lowest price for display on the main card
+                if (lowestPrice !== Infinity) {
+                    // Format as '₱' followed by the number, no cents, with thousands separator
+                    displayPrice = '₱' + lowestPrice.toLocaleString('en-PH', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+                } else {
+                    displayPrice = "N/A"; // If no valid prices found
+                }
+
+
+                const productCardHtml = `
+                    <div class="bg-gray-50 rounded-lg shadow-md border border-gray-200 overflow-hidden flex flex-col">
+                        <div class="bg-gray-300 h-64 flex items-center justify-center rounded-t-lg">
+                            <!-- Main card image for product - now clickable to open image viewer -->
+                            <img src="${product.imageUrl}" alt="${product.shortTitle}" class="rounded-t-lg object-cover w-full h-full cursor-pointer" 
+                                 onerror="this.onerror=null;this.src='https://placehold.co/200x150/e0e0e0/333333?text=No+Image+Found';"
+                                 onclick="showImageViewer('${product.imageUrl}', event);">
+                        </div>
+                        <div class="p-4 flex flex-col flex-grow">
+                            <h2 class="text-2xl font-bold text-gray-800 mb-2">${product.shortTitle}</h2>
+                            <p class="text-gray-600 text-sm mb-4 flex-grow">${product.title}</p>
+                            <div class="flex justify-between items-center mt-auto pt-4 border-t border-gray-200">
+                                <p class="text-lg font-bold text-blue-700">Price starts at <span class="text-xl">${displayPrice}</span></p>
+                                <button class="view-details-btn bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out" data-product-id="${product.id}">
+                                    View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                productGrid.insertAdjacentHTML('beforeend', productCardHtml);
+            });
+
+            // Re-attach event listeners to newly rendered "View Details" buttons
+            document.querySelectorAll('.view-details-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const productId = button.dataset.productId;
+                    showProductDetails(productId);
+                });
+            });
+        }
+
+        // Function to show product details in the modal
+        function showProductDetails(productId) {
+            const product = productsData[productId];
+            if (!product) {
+                console.error("Product not found:", productId);
+                return;
+            }
+
+            modalProductTitle.textContent = product.title;
+            let detailsHtml = `
+                <p class="text-lg text-gray-700 mb-4"><span class="font-semibold">Unit of Measurement (UOM):</span> ${product.uom}</p>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Supplier Pricing:</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            `;
+
+            product.suppliers.forEach(supplier => {
+                detailsHtml += `
+                    <div class="bg-gray-100 p-4 rounded-md shadow-sm border border-gray-200">
+                        <h4 class="text-xl font-semibold text-gray-700 mb-2">${supplier.name}</h4>
+                        <p class="text-lg"><span class="font-medium">Price:</span> <span class="text-blue-600 font-bold">${supplier.price}</span></p>
+                        <p class="text-lg"><span class="font-medium">Total:</span> ${supplier.total}</p>
+                        <div class="mt-2 flex justify-center">
+                            <!-- Supplier image - now clickable to open image viewer -->
+                            <img src="${supplier.imageUrl}" alt="${supplier.name} ${product.shortTitle}" class="w-32 h-32 object-contain rounded-md cursor-pointer" 
+                                 onerror="this.onerror=null;this.src='https://placehold.co/96x96/e0e0e0/333333?text=No+Image+Found';"
+                                 onclick="showImageViewer('${supplier.imageUrl}', event);">
+                        </div>
+                    </div>
+                `;
+            });
+
+            detailsHtml += `</div>`;
+            modalProductDetails.innerHTML = detailsHtml;
+
+            productDetailsModal.classList.add('show');
+        }
+
+        // Function to hide the Product Details Modal
+        function closeProductDetailsModal() {
+            productDetailsModal.classList.remove('show');
+        }
+
+        // Function to show the Image Viewer Modal
+        function showImageViewer(imageUrl, event) {
+            // Stop event propagation to prevent the underlying product details modal from closing
+            if (event) {
+                event.stopPropagation();
+            }
+            viewerImage.src = imageUrl;
+            imageViewerModal.classList.add('show');
+        }
+
+        // Function to hide the Image Viewer Modal
+        function closeImageViewerModal() {
+            imageViewerModal.classList.remove('show');
+            viewerImage.src = ''; // Clear image source
+        }
+
+        // Event listeners for closing modals
+        closeProductDetailsModalBtn.addEventListener('click', closeProductDetailsModal);
+        closeImageViewerModalBtn.addEventListener('click', closeImageViewerModal);
+
+        // Close Product Details Modal when clicking outside of it
+        productDetailsModal.addEventListener('click', (event) => {
+            if (event.target === productDetailsModal) {
+                closeProductDetailsModal();
+            }
+        });
+
+        // Close Image Viewer Modal when clicking outside of it
+        imageViewerModal.addEventListener('click', (event) => {
+            if (event.target === imageViewerModal) {
+                closeImageViewerModal();
+            }
+        });
+
+        // Search functionality
+        searchInput.addEventListener('keyup', (event) => {
+            const searchTerm = event.target.value.toLowerCase();
+            const filteredProducts = productsDataArray.filter(product =>
+                product.title.toLowerCase().includes(searchTerm) ||
+                product.shortTitle.toLowerCase().includes(searchTerm) ||
+                product.suppliers.some(supplier => supplier.name.toLowerCase().includes(searchTerm))
+            );
+            renderProductCards(filteredProducts);
+        });
+
+        // Initial render when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProductCards(productsDataArray);
+            lastUpdatedDateSpan.textContent = new Date().toLocaleDateString(); // Set current date
+        });
+    </script>
+</body>
+</html>
